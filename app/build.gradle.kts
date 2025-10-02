@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.chatlek"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.chatlek"
@@ -56,4 +56,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Material Design
+    implementation(libs.material3)
+    //Navigation Compose
+    implementation(libs.androidx.navigation.compose)
 }
