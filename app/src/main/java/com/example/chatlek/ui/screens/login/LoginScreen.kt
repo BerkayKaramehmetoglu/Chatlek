@@ -1,5 +1,6 @@
 package com.example.chatlek.ui.screens.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -18,32 +20,55 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.chatlek.R
+import com.example.chatlek.firebase.AuthState
+import com.example.chatlek.firebase.AuthViewModel
+import com.example.chatlek.ui.navigation.Screen
 import com.example.chatlek.ui.theme.Black
 import com.example.chatlek.ui.theme.DarkMatBlue
 import com.example.chatlek.ui.theme.Gray
 import com.example.chatlek.ui.theme.White
 
-@Preview(showBackground = true)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewModel) {
+
+    var email by remember { mutableStateOf(TextFieldValue("")) }
+    var password by remember { mutableStateOf(TextFieldValue("")) }
+    val authState = authViewModel.authState.observeAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Authenticated -> navHostController.navigate(Screen.Home.route)
+            is AuthState.Error -> Toast.makeText(
+                context, (authState.value as AuthState.Error).message,
+                Toast.LENGTH_LONG
+            ).show()
+
+            else -> Unit
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -76,16 +101,27 @@ fun LoginScreen() {
                 .weight(1.5f)
                 .fillMaxWidth()
         ) {
-            FilledCard()
+            FilledCard(
+                onClick = { navHostController.navigate(Screen.Register.route) },
+                email = email,
+                onEmailChange = { email = it },
+                password = password,
+                onPasswordChange = { password = it },
+                onClickLogin = { authViewModel.login(email.text, password.text) }
+            )
         }
     }
-
 }
 
 @Composable
-private fun FilledCard() {
-    var email by remember { mutableStateOf(TextFieldValue("")) }
-    var password by remember { mutableStateOf(TextFieldValue("")) }
+private fun FilledCard(
+    email: TextFieldValue,
+    onEmailChange: (TextFieldValue) -> Unit,
+    password: TextFieldValue,
+    onPasswordChange: (TextFieldValue) -> Unit,
+    onClick: () -> Unit,
+    onClickLogin: () -> Unit
+) {
 
     Card(
         colors = CardDefaults.cardColors(
@@ -118,10 +154,11 @@ private fun FilledCard() {
             TextField(
                 modifier = Modifier.padding(top = 32.dp),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email
+                ),
                 value = email,
-                onValueChange = {
-                    email = it
-                },
+                onValueChange = onEmailChange,
                 label = {
                     Text(
                         text = stringResource(R.string.email),
@@ -144,9 +181,7 @@ private fun FilledCard() {
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 value = password,
-                onValueChange = {
-                    password = it
-                },
+                onValueChange = onPasswordChange,
                 label = {
                     Text(
                         text = stringResource(R.string.password),
@@ -164,21 +199,20 @@ private fun FilledCard() {
                 )
             )
 
-            FilledButton(onClick = {})
+            FilledButton(onClickLogin = onClickLogin)
 
-            ButtonText(onClick = {})
+            ButtonText(onClick = onClick)
         }
     }
 }
 
-
 @Composable
-private fun FilledButton(onClick: () -> Unit) {
+private fun FilledButton(onClickLogin: () -> Unit) {
     Button(
         modifier = Modifier
             .padding(top = 24.dp)
             .size(width = 240.dp, height = 56.dp),
-        onClick = { onClick() },
+        onClick = { onClickLogin() },
         colors = ButtonDefaults.buttonColors(Black),
         shape = RoundedCornerShape(16.dp)
     )
