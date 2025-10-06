@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -69,4 +70,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     //LiveData
     implementation(libs.androidx.runtime.livedata)
+    //Ktor
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
 }
