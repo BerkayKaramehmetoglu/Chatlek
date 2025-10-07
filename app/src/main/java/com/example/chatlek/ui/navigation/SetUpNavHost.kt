@@ -6,11 +6,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.chatlek.firebase.AuthViewModel
 import com.example.chatlek.ui.screens.home.HomeScreen
+import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.screens.login.LoginScreen
 import com.example.chatlek.ui.screens.register.RegisterScreen
 
 @Composable
-fun SetUpNavHost(navHostController: NavHostController, authViewModel: AuthViewModel) {
+fun SetUpNavHost(
+    navHostController: NavHostController,
+    authViewModel: AuthViewModel,
+    homeViewModel: HomeViewModel
+) {
     NavHost(navHostController, startDestination = Screen.Login.route) {
 
         composable(Screen.Login.route) {
@@ -22,7 +27,11 @@ fun SetUpNavHost(navHostController: NavHostController, authViewModel: AuthViewMo
         }
 
         composable(Screen.Home.route) {
-            HomeScreen(navHostController = navHostController, authViewModel = authViewModel)
+            HomeScreen(
+                navHostController = navHostController,
+                authViewModel = authViewModel,
+                homeViewModel = homeViewModel
+            )
         }
     }
 }

@@ -1,6 +1,9 @@
 package com.example.chatlek.ktor
 
+import com.example.chatlek.data.entity.ApiResponse
+import com.example.chatlek.data.entity.MessageRequest
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
@@ -47,9 +50,15 @@ class ApiClient {
         }
     }
 
-    suspend fun postFriends(code: String) {
-        val response = client.post(urlString = "friends") {
-            setBody(code)
-        }
-    }//uı tasarımı yapıldıktan sonra dönülecek
+    suspend fun createFriendsCode(code: String): ApiResponse {
+        return client.post(urlString = "friends/create") {
+            setBody(MessageRequest(code))
+        }.body()
+    }
+
+    suspend fun useFriendsCode(code: String): ApiResponse {
+        return client.post(urlString = "friends/use") {
+            setBody(MessageRequest(code))
+        }.body()
+    }
 }

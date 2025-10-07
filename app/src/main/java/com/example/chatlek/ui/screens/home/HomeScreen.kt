@@ -18,6 +18,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -46,10 +47,15 @@ import com.example.chatlek.ui.theme.Green
 import com.example.chatlek.ui.theme.White
 
 @Composable
-fun HomeScreen(navHostController: NavHostController, authViewModel: AuthViewModel) {
-
+fun HomeScreen(
+    navHostController: NavHostController,
+    authViewModel: AuthViewModel,
+    homeViewModel: HomeViewModel
+) {
+    var code by remember { mutableStateOf(TextFieldValue("")) }
     var showDialog by remember { mutableStateOf(false) }
     val authState = authViewModel.authState.observeAsState()
+    val message by homeViewModel.message.collectAsState()
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
@@ -84,16 +90,24 @@ fun HomeScreen(navHostController: NavHostController, authViewModel: AuthViewMode
 
         if (showDialog) {
             DialogAlert(
+                homeViewModel = homeViewModel,
                 dialogTitle = stringResource(R.string.add_friends),
-                onDismissRequest = { showDialog = false },
-                onConfirmation = {
-                    // Confirm butonuna basılınca yapılacak işlemler
+                onDismissRequest = {
                     showDialog = false
-                }
+                    code = TextFieldValue(text = "")
+                },
+                onConfirmation = {
+                    homeViewModel.useFriendsCode(
+                        friendsCode = code.text,
+                        onSuccess = { showDialog = false })
+                    code = TextFieldValue(text = "")
+                },
+                code = code,
+                onCodeChange = { code = it },
+                message = message
             )
         }
     }
-
 }
 
 @Composable
@@ -104,17 +118,26 @@ private fun ButtonAction(modifier: Modifier, onClick: () -> Unit) {
         containerColor = Green,
         contentColor = White
     ) {
-        Icon(painterResource(R.drawable.baseline_add_24), "Floating action button.")
+        Icon(painterResource(R.drawable.baseline_add_24), null)
     }
 }
 
 @Composable
 fun DialogAlert(
+    homeViewModel: HomeViewModel,
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
+    code: TextFieldValue,
+    onCodeChange: (TextFieldValue) -> Unit,
     dialogTitle: String,
+    message: String
 ) {
-    var code by remember { mutableStateOf(TextFieldValue("")) }
+    val generateCode = remember { homeViewModel.generateRandomCode() }
+
+    LaunchedEffect(generateCode) {
+        homeViewModel.createFriendsCode(generateCode)
+    }
+
     AlertDialog(
         title = {
             Text(
@@ -128,11 +151,21 @@ fun DialogAlert(
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Your Code: 123123123",
+                    text = "Your Code: $generateCode",
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp,
                     color = White
                 )
+
+                if (message.isNotBlank()) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = message,
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp,
+                        color = Color.Red
+                    )
+                }
 
                 TextField(
                     singleLine = true,
@@ -140,7 +173,7 @@ fun DialogAlert(
                         keyboardType = KeyboardType.Text
                     ),
                     value = code,
-                    onValueChange = { code = it },
+                    onValueChange = onCodeChange,
                     label = {
                         Text(
                             text = stringResource(R.string.code),
@@ -164,6 +197,7 @@ fun DialogAlert(
         },
         confirmButton = {
             TextButton(
+                enabled = code.text.length == 4,
                 onClick = {
                     onConfirmation()
                 }
@@ -172,7 +206,7 @@ fun DialogAlert(
                     text = stringResource(R.string.add),
                     fontFamily = FontFamily(Font(R.font.bebasneue_regular)),
                     fontSize = 22.sp,
-                    color = Black
+                    color = if (code.text.length == 4) Black else Black.copy(alpha = 0.5f)
                 )
             }
         },
@@ -186,7 +220,7 @@ fun DialogAlert(
                     text = stringResource(R.string.cancel),
                     fontFamily = FontFamily(Font(R.font.bebasneue_regular)),
                     fontSize = 22.sp,
-                    color = Black
+                    color = Color.Red
                 )
             }
         },

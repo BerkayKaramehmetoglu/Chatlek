@@ -10,18 +10,29 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.chatlek.firebase.AuthViewModel
+import com.example.chatlek.ktor.ApiClient
 import com.example.chatlek.ui.navigation.SetUpNavHost
+import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.theme.ChatlekTheme
 
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
+    private val authViewModel: AuthViewModel by viewModels()
+    private val homeViewModel by viewModels<HomeViewModel> {
+        viewModelFactory {
+            addInitializer(HomeViewModel::class) {
+                HomeViewModel(apiClient = ApiClient())
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val authViewModel: AuthViewModel by viewModels()
         setContent {
             ChatlekTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -30,7 +41,8 @@ class MainActivity : ComponentActivity() {
                     Column(modifier = Modifier.padding(innerPadding)) {
                         SetUpNavHost(
                             navHostController = navController,
-                            authViewModel = authViewModel
+                            authViewModel = authViewModel,
+                            homeViewModel = homeViewModel
                         )
                     }
                 }
