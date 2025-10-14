@@ -2,6 +2,7 @@ package com.example.chatlek.ktor
 
 import com.example.chatlek.data.entity.ApiResponse
 import com.example.chatlek.data.entity.MessageRequest
+import com.google.firebase.auth.FirebaseAuth
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -22,8 +23,8 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 class ApiClient {
+    private val timeOut = 10000L
     private val client = HttpClient(OkHttp) {
-
         defaultRequest { url(urlString = "http://10.0.2.2:3000/") }
 
         install(Logging) {
@@ -40,25 +41,29 @@ class ApiClient {
         }
 
         install(HttpTimeout) {
-            requestTimeoutMillis = 10000L
-            connectTimeoutMillis = 10000L
-            socketTimeoutMillis = 10000L
+            requestTimeoutMillis = timeOut
+            connectTimeoutMillis = timeOut
+            socketTimeoutMillis = timeOut
         }
 
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
     }
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var user = auth.currentUser
 
     suspend fun createFriendsCode(code: String): ApiResponse {
         return client.post(urlString = "friends/create") {
-            setBody(MessageRequest(code))
+            if (code.isNotEmpty()) {
+                setBody(MessageRequest(code = code, userId = user?.uid!!, email = user?.email!!))
+            }
         }.body()
     }
 
     suspend fun useFriendsCode(code: String): ApiResponse {
         return client.post(urlString = "friends/use") {
-            setBody(MessageRequest(code))
+            setBody(MessageRequest(code = code, userId = user?.uid!!, email = user?.email!!))
         }.body()
     }
 }

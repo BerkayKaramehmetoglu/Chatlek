@@ -20,26 +20,34 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
     }
 
     fun createFriendsCode(generatedCode: String) {
-        viewModelScope.launch {
-            apiClient.createFriendsCode(code = generatedCode)
+        try {
+            viewModelScope.launch {
+                apiClient.createFriendsCode(code = generatedCode)
+            }
+        } catch (e: Exception) {
+            println(e)
         }
     }
 
     fun useFriendsCode(friendsCode: String, onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            val response = apiClient.useFriendsCode(code = friendsCode)
-            if (!response.success) {
-                message.update {
-                    response.message
+        try {
+            viewModelScope.launch {
+                val response = apiClient.useFriendsCode(code = friendsCode)
+                if (!response.success) {
+                    message.update {
+                        response.message
+                    }
+                } else {
+                    clearMessage()
+                    onSuccess()
                 }
-            } else {
-                clearMessage()
-                onSuccess()
             }
+        } catch (e: Exception) {
+            println(e)
         }
     }
 
-    private fun clearMessage() {
+    fun clearMessage() {
         message.value = ""
     }
 }
