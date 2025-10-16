@@ -1,4 +1,4 @@
-package com.example.chatlek.ui.screens.rlcomponents.components
+package com.example.chatlek.ui.screens.rlcomponents
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton

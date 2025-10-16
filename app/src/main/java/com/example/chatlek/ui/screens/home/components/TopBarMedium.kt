@@ -19,14 +19,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.chatlek.R
 import com.example.chatlek.firebase.AuthViewModel
+import com.example.chatlek.ui.navigation.Screen
 import com.example.chatlek.ui.theme.Black_Out
 import com.example.chatlek.ui.theme.Gray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarMedium(
+    navHostController: NavHostController,
     authViewModel: AuthViewModel,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
@@ -49,7 +52,7 @@ fun TopBarMedium(
             )
         },
         navigationIcon = {
-            IconButton(onClick = { /* do something */ }) {
+            IconButton(onClick = { navHostController.navigate(Screen.Profile.route) }) {
                 Icon(
                     modifier = Modifier.size(32.dp),
                     painter = painterResource(R.drawable.outline_account_box_24),

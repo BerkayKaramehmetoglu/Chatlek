@@ -56,7 +56,11 @@ fun HomeScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopBarMedium(authViewModel, scrollBehavior)
+            TopBarMedium(
+                authViewModel = authViewModel,
+                scrollBehavior = scrollBehavior,
+                navHostController = navHostController
+            )
         },
     ) { innerPadding ->
         Box(

@@ -8,6 +8,7 @@ import com.example.chatlek.firebase.AuthViewModel
 import com.example.chatlek.ui.screens.home.HomeScreen
 import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.screens.login.LoginScreen
+import com.example.chatlek.ui.screens.profile.ProfileScreen
 import com.example.chatlek.ui.screens.register.RegisterScreen
 
 @Composable
@@ -32,6 +33,10 @@ fun SetUpNavHost(
                 authViewModel = authViewModel,
                 homeViewModel = homeViewModel
             )
+        }
+
+        composable(Screen.Profile.route) {
+            ProfileScreen()
         }
     }
 }

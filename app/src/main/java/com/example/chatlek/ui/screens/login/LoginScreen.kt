@@ -31,9 +31,9 @@ import com.example.chatlek.R
 import com.example.chatlek.firebase.AuthState
 import com.example.chatlek.firebase.AuthViewModel
 import com.example.chatlek.ui.navigation.Screen
-import com.example.chatlek.ui.screens.rlcomponents.components.FilledCard
+import com.example.chatlek.ui.screens.rlcomponents.FilledCard
 import com.example.chatlek.ui.theme.Black
-import com.example.chatlek.ui.theme.DarkMatBlue
+import com.example.chatlek.ui.theme.Black_Out
 import com.example.chatlek.ui.theme.White
 
 @Composable
@@ -59,7 +59,7 @@ fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewMod
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkMatBlue)
+            .background(Black_Out)
     ) {
         Column(
             modifier = Modifier

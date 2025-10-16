@@ -1,6 +1,7 @@
 package com.example.chatlek.ktor
 
 import com.example.chatlek.data.entity.ApiResponse
+import com.example.chatlek.data.entity.GetFriends
 import com.example.chatlek.data.entity.MessageRequest
 import com.google.firebase.auth.FirebaseAuth
 import io.ktor.client.HttpClient
@@ -14,6 +15,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -65,5 +67,11 @@ class ApiClient {
         return client.post(urlString = "friends/use") {
             setBody(MessageRequest(code = code, userId = user?.uid!!, email = user?.email!!))
         }.body()
+    }
+
+    suspend fun getFriends(): List<String> {
+        val id = auth.currentUser!!.uid
+        val response: GetFriends = client.get(urlString = "getFriends/$id").body()
+        return response.friends
     }
 }

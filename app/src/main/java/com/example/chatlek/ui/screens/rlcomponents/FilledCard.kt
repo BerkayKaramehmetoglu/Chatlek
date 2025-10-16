@@ -1,4 +1,4 @@
-package com.example.chatlek.ui.screens.rlcomponents.components
+package com.example.chatlek.ui.screens.rlcomponents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

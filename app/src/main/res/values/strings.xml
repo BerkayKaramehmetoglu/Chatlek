@@ -8,7 +8,8 @@
     <string name="already_registered_log_in_here.">Already Registered? Log in here.</string>
     <string name="signup">Signup !</string>
     <string name="email">EMAIL</string>
-    <string name="username">NAME</string>
+    <string name="name">NAME</string>
+    <string name="lastname">LAST NAME</string>
     <string name="password">PASSWORD</string>
     <string name="code">Friends Code</string>
     <string name="add_friends">Add Friends</string>
@@ -16,4 +17,6 @@
     <string name="cancel">Cancel</string>
     <string name="dont_add_yourself">You can\'t add yourself</string>
     <string name="create_your_friends_code">Click to create a FriendsCode</string>
+    <string name="confirm">Confirm</string>
+    <string name="edit_profile">Edit Profile</string>
 </resources>
