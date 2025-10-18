@@ -20,7 +20,7 @@ fun FieldsText(
     onChange: (TextFieldValue) -> Unit,
     label: String,
     keyboardType: KeyboardType,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     TextField(
         enabled = enabled,
@@ -44,7 +44,7 @@ fun FieldsText(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
-            //disabledContainerColor = White,
+            disabledContainerColor = White.copy(alpha = 0.5f),
         )
     )
 }

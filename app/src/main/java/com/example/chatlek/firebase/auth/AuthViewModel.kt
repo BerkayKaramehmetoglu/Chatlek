@@ -1,4 +1,4 @@
-package com.example.chatlek.firebase
+package com.example.chatlek.firebase.auth
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

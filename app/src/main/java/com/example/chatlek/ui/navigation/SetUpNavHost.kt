@@ -4,18 +4,20 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.chatlek.firebase.AuthViewModel
+import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ui.screens.home.HomeScreen
 import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.screens.login.LoginScreen
 import com.example.chatlek.ui.screens.profile.ProfileScreen
+import com.example.chatlek.ui.screens.profile.ProfileViewModel
 import com.example.chatlek.ui.screens.register.RegisterScreen
 
 @Composable
 fun SetUpNavHost(
     navHostController: NavHostController,
     authViewModel: AuthViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    profileViewModel: ProfileViewModel
 ) {
     NavHost(navHostController, startDestination = Screen.Login.route) {
 
@@ -36,7 +38,7 @@ fun SetUpNavHost(
         }
 
         composable(Screen.Profile.route) {
-            ProfileScreen()
+            ProfileScreen(profileViewModel = profileViewModel)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.chatlek.firebase
+package com.example.chatlek.firebase.auth
 
 sealed class AuthState {
     data object Authenticated : AuthState()

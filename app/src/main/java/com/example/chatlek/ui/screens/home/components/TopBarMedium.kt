@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.chatlek.R
-import com.example.chatlek.firebase.AuthViewModel
+import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ui.navigation.Screen
 import com.example.chatlek.ui.theme.Black_Out
 import com.example.chatlek.ui.theme.Gray

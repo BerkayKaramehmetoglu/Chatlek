@@ -63,9 +63,11 @@ dependencies {
     implementation(libs.material3)
     //Navigation Compose
     implementation(libs.androidx.navigation.compose)
-    //Firebase
+    //Firebase Auth
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    //Firebase Storage
+    implementation(libs.firebase.storage)
     //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     //LiveData

@@ -13,15 +13,24 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.chatlek.firebase.AuthViewModel
+import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ktor.ApiClient
 import com.example.chatlek.ui.navigation.SetUpNavHost
 import com.example.chatlek.ui.screens.home.HomeViewModel
+import com.example.chatlek.ui.screens.profile.ProfileViewModel
 import com.example.chatlek.ui.theme.ChatlekTheme
 
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
     private val authViewModel: AuthViewModel by viewModels()
+
+    private val profileViewModel by viewModels<ProfileViewModel> {
+        viewModelFactory {
+            addInitializer(ProfileViewModel::class) {
+                ProfileViewModel(apiClient = ApiClient())
+            }
+        }
+    }
     private val homeViewModel by viewModels<HomeViewModel> {
         viewModelFactory {
             addInitializer(HomeViewModel::class) {
@@ -42,7 +51,8 @@ class MainActivity : ComponentActivity() {
                         SetUpNavHost(
                             navHostController = navController,
                             authViewModel = authViewModel,
-                            homeViewModel = homeViewModel
+                            homeViewModel = homeViewModel,
+                            profileViewModel = profileViewModel
                         )
                     }
                 }
