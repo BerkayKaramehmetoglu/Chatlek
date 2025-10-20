@@ -17,6 +17,7 @@
     <string name="cancel">Cancel</string>
     <string name="dont_add_yourself">You can\'t add yourself</string>
     <string name="create_your_friends_code">Click to create a FriendsCode</string>
-    <string name="confirm">Confirm</string>
+    <string name="create">Create</string>
+    <string name="update">Update</string>
     <string name="edit_profile">Edit Profile</string>
 </resources>

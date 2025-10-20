@@ -5,6 +5,7 @@ import com.example.chatlek.data.entity.CreateUser
 import com.example.chatlek.data.entity.GetFriends
 import com.example.chatlek.data.entity.GetUser
 import com.example.chatlek.data.entity.MessageRequest
+import com.example.chatlek.data.entity.UpdateUser
 import com.google.firebase.auth.FirebaseAuth
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -89,6 +90,19 @@ class ApiClient {
         val id = auth.currentUser!!.uid
         val response: GetFriends = client.get(urlString = "getFriends/$id").body()
         return response.friends
+    }
+
+    suspend fun updateUser(name: String, lastName: String, picURL: String): ApiResponse {
+        return client.post(urlString = "update_user") {
+            setBody(
+                UpdateUser(
+                    id = user?.uid!!,
+                    name = name,
+                    lastName = lastName,
+                    picURL = picURL
+                )
+            )
+        }.body()
     }
 
     suspend fun getUser(): GetUser {

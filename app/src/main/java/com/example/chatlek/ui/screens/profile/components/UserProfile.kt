@@ -39,7 +39,7 @@ import com.example.chatlek.ui.theme.Green
 fun UserProfile(profileViewModel: ProfileViewModel) {
 
     val storageViewModel: StorageViewModel = viewModel()
-    val user = profileViewModel.user.observeAsState()
+    val user by profileViewModel.user.observeAsState()
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -57,9 +57,13 @@ fun UserProfile(profileViewModel: ProfileViewModel) {
     Box(
         modifier = Modifier.size(146.dp)
     ) {
-        if (user.value?.profilePic != null) {
+        val userProfile = user?.profilePic.isNullOrBlank()
+        val imageURL = imageUri != null
+
+        if (!userProfile || imageURL) {
             AsyncImage(
-                model = user.value!!.profilePic,
+                model = if (!userProfile) user!!.profilePic
+                else ImageRequest.Builder(context).data(imageUri).build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -67,17 +71,7 @@ fun UserProfile(profileViewModel: ProfileViewModel) {
                     .clip(CircleShape)
                     .background(Black_Out)
             )
-        } else if (imageUri != null) {
-            AsyncImage(
-                model = ImageRequest.Builder(context).data(imageUri).build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .matchParentSize()
-                    .clip(CircleShape)
-                    .background(Black_Out)
-            )
-            storageViewModel.uploadImage(imageUri!!)
+            if (imageURL) storageViewModel.uploadImage(imageUri!!)
         } else {
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),

@@ -27,11 +27,11 @@ import com.example.chatlek.ui.theme.White
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
 ) {
-    val user = profileViewModel.user.observeAsState()
+    val user by profileViewModel.user.observeAsState()
 
-    var name by remember { mutableStateOf(TextFieldValue(user.value?.name ?: "")) }
-    var lastname by remember { mutableStateOf(TextFieldValue(user.value?.lastName ?: "")) }
-    var email by remember { mutableStateOf(TextFieldValue(user.value?.email ?: "")) }
+    var name by remember { mutableStateOf(TextFieldValue(user?.name ?: "")) }
+    var lastname by remember { mutableStateOf(TextFieldValue(user?.lastName ?: "")) }
+    var email by remember { mutableStateOf(TextFieldValue(user?.email ?: "")) }
 
     Column(
         modifier = Modifier
