@@ -40,6 +40,8 @@ class ProfileViewModel(private val apiClient: ApiClient) : ViewModel() {
                     message.update {
                         response.message
                     }
+                    delay(3000L)
+                    clearMessage()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -81,7 +83,7 @@ class ProfileViewModel(private val apiClient: ApiClient) : ViewModel() {
         }
     }
 
-    private fun clearMessage(){
+    private fun clearMessage() {
         message.value = ""
     }
 }

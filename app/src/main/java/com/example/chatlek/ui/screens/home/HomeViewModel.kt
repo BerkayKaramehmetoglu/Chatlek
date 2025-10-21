@@ -1,7 +1,9 @@
 package com.example.chatlek.ui.screens.home
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatlek.data.entity.GetUser
 import com.example.chatlek.ktor.ApiClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -11,6 +13,12 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
 
     var message = MutableStateFlow("")
         private set
+    var friends = MutableLiveData<List<GetUser>>(emptyList())
+        private set
+
+    init {
+        getFriends()
+    }
 
     fun generateRandomCode(length: Int = 4): String {
         val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -41,6 +49,17 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
                     clearMessage()
                     onSuccess()
                 }
+            }
+        } catch (e: Exception) {
+            println(e)
+        }
+    }
+
+    private fun getFriends() {
+        try {
+            viewModelScope.launch {
+                val response = apiClient.getFriends()
+                friends.value = response
             }
         } catch (e: Exception) {
             println(e)

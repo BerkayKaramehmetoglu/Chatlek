@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -62,8 +63,8 @@ fun UserProfile(profileViewModel: ProfileViewModel) {
 
         if (!userProfile || imageURL) {
             AsyncImage(
-                model = if (!userProfile) user!!.profilePic
-                else ImageRequest.Builder(context).data(imageUri).build(),
+                model = if (imageURL) ImageRequest.Builder(context).data(imageUri).build()
+                else user!!.profilePic,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

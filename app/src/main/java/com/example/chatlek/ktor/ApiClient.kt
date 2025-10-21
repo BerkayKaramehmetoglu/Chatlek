@@ -2,7 +2,6 @@ package com.example.chatlek.ktor
 
 import com.example.chatlek.data.entity.ApiResponse
 import com.example.chatlek.data.entity.CreateUser
-import com.example.chatlek.data.entity.GetFriends
 import com.example.chatlek.data.entity.GetUser
 import com.example.chatlek.data.entity.MessageRequest
 import com.example.chatlek.data.entity.UpdateUser
@@ -61,14 +60,14 @@ class ApiClient {
     suspend fun createFriendsCode(code: String): ApiResponse {
         return client.post(urlString = "friends/create") {
             if (code.isNotEmpty()) {
-                setBody(MessageRequest(code = code, userId = user?.uid!!, email = user?.email!!))
+                setBody(MessageRequest(code = code, id = user?.uid!!))
             }
         }.body()
     }
 
     suspend fun useFriendsCode(code: String): ApiResponse {
         return client.post(urlString = "friends/use") {
-            setBody(MessageRequest(code = code, userId = user?.uid!!, email = user?.email!!))
+            setBody(MessageRequest(code = code, id = user?.uid!!))
         }.body()
     }
 
@@ -86,10 +85,9 @@ class ApiClient {
         }.body()
     }
 
-    suspend fun getFriends(): List<String> {
+    suspend fun getFriends(): List<GetUser> {
         val id = auth.currentUser!!.uid
-        val response: GetFriends = client.get(urlString = "getFriends/$id").body()
-        return response.friends
+        return client.get(urlString = "get_friends/$id").body<List<GetUser>>()
     }
 
     suspend fun updateUser(name: String, lastName: String, picURL: String): ApiResponse {

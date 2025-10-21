@@ -24,21 +24,22 @@ import com.example.chatlek.ui.screens.profile.ProfileViewModel
 import com.example.chatlek.ui.theme.Gray
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun CardFilled(
-    name: TextFieldValue,
-    onNameChange: (TextFieldValue) -> Unit,
-    lastName: TextFieldValue,
-    onLastNameChange: (TextFieldValue) -> Unit,
-    email: TextFieldValue,
-    onEmailChange: (TextFieldValue) -> Unit,
     profileViewModel: ProfileViewModel,
     storageViewModel: StorageViewModel = viewModel()
 ) {
     val image by storageViewModel.imageData.observeAsState()
     val message by profileViewModel.message.collectAsState()
     val user by profileViewModel.user.observeAsState()
+
+    var name by remember { mutableStateOf(TextFieldValue(user?.name ?: "")) }
+    var lastName by remember { mutableStateOf(TextFieldValue(user?.lastName ?: "")) }
+    var email by remember { mutableStateOf(TextFieldValue(user?.email ?: "")) }
 
     val context = LocalContext.current
 
@@ -66,21 +67,21 @@ fun CardFilled(
 
             FieldsText(
                 value = name,
-                onChange = onNameChange,
+                onChange = { name = it },
                 label = stringResource(R.string.name),
                 keyboardType = KeyboardType.Text
             )
 
             FieldsText(
                 value = lastName,
-                onChange = onLastNameChange,
+                onChange = { lastName = it },
                 label = stringResource(R.string.lastname),
                 keyboardType = KeyboardType.Text
             )
 
             FieldsText(
                 value = email,
-                onChange = onEmailChange,
+                onChange = { email = it },
                 label = stringResource(R.string.email),
                 keyboardType = KeyboardType.Email,
                 enabled = false

@@ -70,7 +70,7 @@ fun HomeScreen(
                 .background(Black)
         ) {
 
-            ChatList()
+            ChatList(homeViewModel = homeViewModel)
 
             ActionFloating(
                 modifier = Modifier
