@@ -48,7 +48,11 @@ fun ChatList(homeViewModel: HomeViewModel, navHostController: NavHostController)
             friends.value?.let {
                 items(it) { friends ->
                     ChatCard(friends, onClick = {
-                        navHostController.navigate(route = Screen.Chat.route)
+                        navHostController.navigate(
+                            Screen.Chat(
+                                chatUser = friends
+                            )
+                        )
                     })
                     Spacer(modifier = Modifier.size(16.dp))
                     HorizontalDivider(color = Black)
