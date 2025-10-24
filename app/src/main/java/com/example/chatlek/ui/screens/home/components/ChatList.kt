@@ -17,13 +17,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.ui.navigation.Screen
 import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.theme.Black
 import com.example.chatlek.ui.theme.Black_Out
 
 @Composable
-fun ChatList(homeViewModel: HomeViewModel) {
+fun ChatList(homeViewModel: HomeViewModel, navHostController: NavHostController) {
     val friends: State<List<GetUser>?> = homeViewModel.friends.observeAsState()
 
     Card(
@@ -45,7 +47,9 @@ fun ChatList(homeViewModel: HomeViewModel) {
         ) {
             friends.value?.let {
                 items(it) { friends ->
-                    ChatCard(friends)
+                    ChatCard(friends, onClick = {
+                        navHostController.navigate(route = Screen.Chat.route)
+                    })
                     Spacer(modifier = Modifier.size(16.dp))
                     HorizontalDivider(color = Black)
                 }

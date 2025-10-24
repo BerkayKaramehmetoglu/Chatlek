@@ -1,6 +1,7 @@
 package com.example.chatlek.ui.screens.home.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,13 +25,14 @@ import com.example.chatlek.ui.theme.Gray
 import com.example.chatlek.ui.theme.White
 
 @Composable
-fun ChatCard(friends: GetUser) {
+fun ChatCard(friends: GetUser, onClick: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Black_Out,
         ),
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

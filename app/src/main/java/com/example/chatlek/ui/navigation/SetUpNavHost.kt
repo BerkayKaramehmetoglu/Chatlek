@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.chatlek.firebase.auth.AuthViewModel
+import com.example.chatlek.ui.screens.chat.ChatScreen
 import com.example.chatlek.ui.screens.home.HomeScreen
 import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.screens.login.LoginScreen
@@ -39,6 +40,10 @@ fun SetUpNavHost(
 
         composable(Screen.Profile.route) {
             ProfileScreen(profileViewModel = profileViewModel)
+        }
+
+        composable(Screen.Chat.route) {
+            ChatScreen(navHostController = navHostController)
         }
     }
 }
