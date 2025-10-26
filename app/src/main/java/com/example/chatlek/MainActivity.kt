@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ktor.ApiClient
 import com.example.chatlek.ui.navigation.SetUpNavHost
+import com.example.chatlek.ui.screens.chat.ChatViewModel
 import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.screens.profile.ProfileViewModel
 import com.example.chatlek.ui.theme.ChatlekTheme
@@ -38,6 +39,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    private val chatViewModel by viewModels<ChatViewModel> {
+        viewModelFactory {
+            addInitializer(ChatViewModel::class) {
+                ChatViewModel(apiClient = ApiClient())
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +60,8 @@ class MainActivity : ComponentActivity() {
                             navHostController = navController,
                             authViewModel = authViewModel,
                             homeViewModel = homeViewModel,
-                            profileViewModel = profileViewModel
+                            profileViewModel = profileViewModel,
+                            chatViewModel = chatViewModel
                         )
                     }
                 }

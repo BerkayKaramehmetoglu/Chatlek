@@ -1,6 +1,7 @@
 package com.example.chatlek.ktor
 
 import com.example.chatlek.data.entity.ApiResponse
+import com.example.chatlek.data.entity.ChatMessage
 import com.example.chatlek.data.entity.CreateUser
 import com.example.chatlek.data.entity.GetUser
 import com.example.chatlek.data.entity.MessageRequest
@@ -17,13 +18,20 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.sendSerialized
+import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
 import kotlinx.serialization.json.Json
 
 class ApiClient {
@@ -48,6 +56,10 @@ class ApiClient {
             requestTimeoutMillis = timeOut
             connectTimeoutMillis = timeOut
             socketTimeoutMillis = timeOut
+        }
+
+        install(WebSockets) {
+            contentConverter = KotlinxWebsocketSerializationConverter(Json)
         }
 
         install(DefaultRequest) {
@@ -107,5 +119,29 @@ class ApiClient {
         val id = auth.currentUser!!.uid
         val response: GetUser = client.get(urlString = "get_user/$id").body()
         return response
+    }
+
+    suspend fun connectWebSocket() {
+        client.webSocket(
+            method = HttpMethod.Get,
+            host = "10.0.2.2",
+            port = 8080,
+        ) {
+            println("WebSocket bağlantısı kuruldu")
+
+            sendSerialized(ChatMessage(id = auth.currentUser!!.uid, message = "Merhaba"))
+
+            for (frame in incoming) {
+                if (frame is Frame.Text) {
+                    val text = frame.readText()
+                    try {
+                        val received = Json.decodeFromString<ChatMessage>(text)
+                        println("Mesaj: ${received.id}: ${received.message}")
+                    } catch (e: Exception) {
+                        println("Mesaj parse hatası: ${e.message}")
+                    }
+                }
+            }
+        }
     }
 }

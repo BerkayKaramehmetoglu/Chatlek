@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.example.chatlek.data.entity.GetUser
 import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ui.screens.chat.ChatScreen
+import com.example.chatlek.ui.screens.chat.ChatViewModel
 import com.example.chatlek.ui.screens.home.HomeScreen
 import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.screens.login.LoginScreen
@@ -21,7 +22,8 @@ fun SetUpNavHost(
     navHostController: NavHostController,
     authViewModel: AuthViewModel,
     homeViewModel: HomeViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    chatViewModel: ChatViewModel
 ) {
     NavHost(navHostController, startDestination = Screen.Login.route) {
 
@@ -51,7 +53,7 @@ fun SetUpNavHost(
             )
         ) {
             val arguments = it.toRoute<Screen.Chat>()
-            ChatScreen(navHostController = navHostController, chatUser = arguments.chatUser)
+            ChatScreen(navHostController = navHostController, chatUser = arguments.chatUser, chatViewModel = chatViewModel)
         }
     }
 }

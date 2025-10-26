@@ -7,17 +7,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.chatlek.ui.screens.chat.ChatViewModel
 import com.example.chatlek.ui.screens.chat.examp.Message
 
 
 @Composable
-fun ChatList(modifier: Modifier = Modifier) {
+fun ChatList(modifier: Modifier = Modifier, chatViewModel: ChatViewModel) {
     val messages = listOf(
         Message("Selam, nasılsın?", true),
         Message("İyiyim sen?", false),
         Message("Ben de iyiyim, ne yapıyorsun?", true),
         Message("Bir şeyler kodluyorum 😄", false)
     )
+
+    chatViewModel.startWebSocket()
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),

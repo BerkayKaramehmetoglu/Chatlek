@@ -19,7 +19,11 @@ import com.example.chatlek.ui.screens.chat.components.TopBar
 import com.example.chatlek.ui.theme.Black
 
 @Composable
-fun ChatScreen(navHostController: NavHostController, chatUser: GetUser) {
+fun ChatScreen(
+    navHostController: NavHostController,
+    chatUser: GetUser,
+    chatViewModel: ChatViewModel
+) {
     Scaffold(
         topBar = {
             TopBar(chatUser = chatUser, navHostController)
@@ -36,7 +40,8 @@ fun ChatScreen(navHostController: NavHostController, chatUser: GetUser) {
             ChatList(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                chatViewModel = chatViewModel
             )
 
             ChatFieldText(
