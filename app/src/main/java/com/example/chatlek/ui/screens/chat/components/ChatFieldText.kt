@@ -1,6 +1,7 @@
 package com.example.chatlek.ui.screens.chat.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -12,16 +13,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.chatlek.R
+import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.ui.screens.chat.ChatViewModel
 import com.example.chatlek.ui.theme.Black_Out
 import com.example.chatlek.ui.theme.Green
 import com.example.chatlek.ui.theme.White
 
-
 @Composable
-fun ChatFieldText(modifier: Modifier = Modifier) {
-    var message by remember { mutableStateOf("") }
+fun ChatFieldText(
+    modifier: Modifier = Modifier,
+    chatViewModel: ChatViewModel,
+    chatUser: GetUser,
+) {
+    var message by remember { mutableStateOf(TextFieldValue("")) }
 
     TextField(
         value = message,
@@ -36,6 +43,14 @@ fun ChatFieldText(modifier: Modifier = Modifier) {
             unfocusedIndicatorColor = Color.Transparent,
             focusedTextColor = White,
             unfocusedTextColor = White,
+        ),
+        keyboardActions = KeyboardActions(
+            onSend = {
+                if (message.text.isNotBlank()) {
+                    chatViewModel.createChat(receiverId = chatUser.id, lastMessage = message.text)
+                    message = TextFieldValue("")
+                }
+            }
         ),
         modifier = modifier
     )

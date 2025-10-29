@@ -2,7 +2,9 @@ package com.example.chatlek.ktor
 
 import com.example.chatlek.data.entity.ApiResponse
 import com.example.chatlek.data.entity.ChatMessage
+import com.example.chatlek.data.entity.CreateChat
 import com.example.chatlek.data.entity.CreateUser
+import com.example.chatlek.data.entity.GetChat
 import com.example.chatlek.data.entity.GetUser
 import com.example.chatlek.data.entity.MessageRequest
 import com.example.chatlek.data.entity.UpdateUser
@@ -119,6 +121,29 @@ class ApiClient {
         val id = auth.currentUser!!.uid
         val response: GetUser = client.get(urlString = "get_user/$id").body()
         return response
+    }
+
+    suspend fun createChat(receiverId: String, lastMessage: String): ApiResponse {
+        val id = auth.currentUser!!.uid
+        return client.post(urlString = "create_chat") {
+            setBody(
+                CreateChat(
+                    senderId = id,
+                    receiverId = receiverId,
+                    lastMessage = lastMessage
+                )
+            )
+        }.body()
+    }
+
+    suspend fun getChat(receiverId: String): GetChat {
+        val id = auth.currentUser!!.uid
+        return client.get(urlString = "get_chat") {
+            url {
+                parameters.append("senderId", id)
+                parameters.append("receiverId", receiverId)
+            }
+        }.body()
     }
 
     suspend fun connectWebSocket() {

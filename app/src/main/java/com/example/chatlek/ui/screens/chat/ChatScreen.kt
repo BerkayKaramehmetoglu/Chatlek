@@ -24,6 +24,7 @@ fun ChatScreen(
     chatUser: GetUser,
     chatViewModel: ChatViewModel
 ) {
+
     Scaffold(
         topBar = {
             TopBar(chatUser = chatUser, navHostController)
@@ -47,7 +48,9 @@ fun ChatScreen(
             ChatFieldText(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 8.dp, end = 8.dp)
+                    .padding(start = 8.dp, end = 8.dp),
+                chatViewModel = chatViewModel,
+                chatUser = chatUser
             )
         }
     }

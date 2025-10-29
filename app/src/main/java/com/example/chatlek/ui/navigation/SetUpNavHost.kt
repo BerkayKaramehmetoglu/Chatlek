@@ -39,7 +39,8 @@ fun SetUpNavHost(
             HomeScreen(
                 navHostController = navHostController,
                 authViewModel = authViewModel,
-                homeViewModel = homeViewModel
+                homeViewModel = homeViewModel,
+                chatViewModel = chatViewModel
             )
         }
 
@@ -53,7 +54,11 @@ fun SetUpNavHost(
             )
         ) {
             val arguments = it.toRoute<Screen.Chat>()
-            ChatScreen(navHostController = navHostController, chatUser = arguments.chatUser, chatViewModel = chatViewModel)
+            ChatScreen(
+                navHostController = navHostController,
+                chatUser = arguments.chatUser,
+                chatViewModel = chatViewModel
+            )
         }
     }
 }

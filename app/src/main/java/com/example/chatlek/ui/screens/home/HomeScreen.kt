@@ -27,6 +27,7 @@ import com.example.chatlek.R
 import com.example.chatlek.firebase.auth.AuthState
 import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ui.navigation.Screen
+import com.example.chatlek.ui.screens.chat.ChatViewModel
 import com.example.chatlek.ui.screens.home.components.ActionFloating
 import com.example.chatlek.ui.theme.Black
 import com.example.chatlek.ui.screens.home.components.TopBarMedium
@@ -38,7 +39,8 @@ import com.example.chatlek.ui.screens.home.components.DialogAlert
 fun HomeScreen(
     navHostController: NavHostController,
     authViewModel: AuthViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    chatViewModel: ChatViewModel
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     var code by remember { mutableStateOf(TextFieldValue("")) }
@@ -70,7 +72,11 @@ fun HomeScreen(
                 .background(Black)
         ) {
 
-            ChatList(homeViewModel = homeViewModel, navHostController = navHostController)
+            ChatList(
+                homeViewModel = homeViewModel,
+                navHostController = navHostController,
+                chatViewModel = chatViewModel,
+            )
 
             ActionFloating(
                 modifier = Modifier
