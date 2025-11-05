@@ -1,13 +1,13 @@
 package com.example.chatlek.ktor
 
-import com.example.chatlek.data.entity.ApiResponse
-import com.example.chatlek.data.entity.ChatMessage
-import com.example.chatlek.data.entity.CreateChat
-import com.example.chatlek.data.entity.CreateUser
-import com.example.chatlek.data.entity.GetChat
-import com.example.chatlek.data.entity.GetUser
-import com.example.chatlek.data.entity.MessageRequest
-import com.example.chatlek.data.entity.UpdateUser
+import com.example.chatlek.data.entity.client.ApiResponse
+import com.example.chatlek.data.entity.chat.ChatMessage
+import com.example.chatlek.data.entity.chat.CreateChat
+import com.example.chatlek.data.entity.user.CreateUser
+import com.example.chatlek.data.entity.chat.GetChat
+import com.example.chatlek.data.entity.user.GetUser
+import com.example.chatlek.data.entity.client.MessageRequest
+import com.example.chatlek.data.entity.user.UpdateUser
 import com.google.firebase.auth.FirebaseAuth
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -20,16 +20,16 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.client.plugins.websocket.sendSerialized
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.websocket.Frame
@@ -146,27 +146,51 @@ class ApiClient {
         }.body()
     }
 
-    suspend fun connectWebSocket() {
-        client.webSocket(
-            method = HttpMethod.Get,
-            host = "10.0.2.2",
-            port = 8080,
-        ) {
-            println("WebSocket bağlantısı kuruldu")
+    suspend fun updateChat(receiverId: String, lastMessage: String): GetChat {
+        val id = auth.currentUser!!.uid
+        return client.put("update_chat") {
+            setBody(
+                mapOf(
+                    "senderId" to id,
+                    "receiverId" to receiverId,
+                    "lastMessage" to lastMessage
+                )
+            )
+        }.body()
+    }
 
-            sendSerialized(ChatMessage(id = auth.currentUser!!.uid, message = "Merhaba"))
+    private var socketSession: DefaultClientWebSocketSession? = null
+    suspend fun connectWebSocket(onMessageReceived: (ChatMessage) -> Unit) {
+        try {
+            client.webSocket(urlString = "ws://10.0.2.2:8080") {
+                socketSession = this
+                println("WebSocket bağlantısı kuruldu")
 
-            for (frame in incoming) {
-                if (frame is Frame.Text) {
-                    val text = frame.readText()
-                    try {
-                        val received = Json.decodeFromString<ChatMessage>(text)
-                        println("Mesaj: ${received.id}: ${received.message}")
-                    } catch (e: Exception) {
-                        println("Mesaj parse hatası: ${e.message}")
+                for (frame in incoming) {
+                    if (frame is Frame.Text) {
+                        val text = frame.readText()
+                        try {
+                            val received = Json.decodeFromString<ChatMessage>(text)
+                            onMessageReceived(received)
+                        } catch (e: Exception) {
+                            println("Mesaj parse hatası: ${e.message}")
+                        }
                     }
                 }
             }
+
+        } catch (e: Exception) {
+            println("WebSocket bağlantı hatası: ${e.message}")
+        }
+    }
+
+    suspend fun sendMessage(message: ChatMessage) {
+        try {
+            val json = Json.encodeToString(ChatMessage.serializer(), message)
+            socketSession?.send(Frame.Text(json))
+            println("Mesaj gönderildi: ${message.message}")
+        } catch (e: Exception) {
+            println("Mesaj gönderme hatası: ${e.message}")
         }
     }
 }

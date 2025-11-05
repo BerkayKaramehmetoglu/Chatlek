@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.data.entity.user.GetUser
 import com.example.chatlek.ui.screens.chat.components.ChatFieldText
 import com.example.chatlek.ui.screens.chat.components.ChatList
 import com.example.chatlek.ui.screens.chat.components.TopBar

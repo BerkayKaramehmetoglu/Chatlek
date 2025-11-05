@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.data.entity.user.GetUser
 import com.example.chatlek.ui.navigation.Screen
 import com.example.chatlek.ui.screens.chat.ChatViewModel
 import com.example.chatlek.ui.screens.home.HomeViewModel
@@ -60,6 +60,7 @@ fun ChatList(
                                     chatUser = friends
                                 )
                             )
+                            chatViewModel.startWebSocket()
                         },
                         chatViewModel = chatViewModel
                     )

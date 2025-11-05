@@ -1,4 +1,4 @@
-package com.example.chatlek.data.entity
+package com.example.chatlek.data.entity.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

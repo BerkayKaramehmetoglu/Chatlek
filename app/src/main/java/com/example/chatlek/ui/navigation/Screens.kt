@@ -1,6 +1,6 @@
 package com.example.chatlek.ui.navigation
 
-import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.data.entity.user.GetUser
 import kotlinx.serialization.Serializable
 
 @Serializable

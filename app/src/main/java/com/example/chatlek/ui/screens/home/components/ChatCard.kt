@@ -20,7 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.data.entity.user.GetUser
 import com.example.chatlek.ui.screens.chat.ChatViewModel
 import com.example.chatlek.ui.theme.Black_Out
 import com.example.chatlek.ui.theme.Gray

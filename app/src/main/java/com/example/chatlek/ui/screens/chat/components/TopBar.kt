@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.chatlek.R
-import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.data.entity.user.GetUser
 import com.example.chatlek.ui.theme.Black_Out
 import com.example.chatlek.ui.theme.White
 

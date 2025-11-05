@@ -3,7 +3,7 @@ package com.example.chatlek.ui.navigation
 import android.net.Uri
 import androidx.navigation.NavType
 import androidx.savedstate.SavedState
-import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.data.entity.user.GetUser
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

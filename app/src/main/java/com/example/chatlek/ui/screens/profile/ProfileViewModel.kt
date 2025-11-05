@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.data.entity.user.GetUser
 import com.example.chatlek.ktor.ApiClient
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

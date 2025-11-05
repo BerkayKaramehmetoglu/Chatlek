@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.example.chatlek.data.entity.GetUser
+import com.example.chatlek.data.entity.user.GetUser
 import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ui.screens.chat.ChatScreen
 import com.example.chatlek.ui.screens.chat.ChatViewModel
