@@ -7,14 +7,17 @@ import com.example.chatlek.data.entity.chat.ChatMessage
 import com.example.chatlek.data.entity.chat.GetChat
 import com.example.chatlek.ktor.ApiClient
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ChatViewModel(
-    private val apiClient: ApiClient,
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    var apiClient: ApiClient,
+    var auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) : ViewModel() {
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
@@ -23,23 +26,41 @@ class ChatViewModel(
     var chats = MutableLiveData<GetChat>()
         private set
 
-    fun startWebSocket() {
+    private fun startWebSocket() {
         viewModelScope.launch {
-            apiClient.connectWebSocket { received ->
-                _messages.update { it + received }
+            try {
+                apiClient.connectWebSocket { received ->
+                    _messages.update { it + received }
+                }
+            } catch (e: Exception) {
+                println("WebSocket Error: $e")
             }
         }
     }
 
     fun sendMessage(text: String) {
-        viewModelScope.launch {
-            val myMessage = ChatMessage(
-                id = auth.currentUser!!.uid,
-                message = text,
-                isMine = true
-            )
-            _messages.update { it + myMessage }
-            apiClient.sendMessage(myMessage)
+        try {
+            viewModelScope.launch {
+                val myMessage = ChatMessage(
+                    id = auth.currentUser!!.uid,
+                    message = text,
+                    isMine = true
+                )
+                _messages.update { it + myMessage }
+                apiClient.sendMessage(myMessage)
+            }
+        } catch (e: Exception) {
+            println("Send Message Error $e")
+        }
+    }
+
+    fun disconnectWebSocket() {
+        try {
+            viewModelScope.launch {
+                apiClient.disconnectWebSocket()
+            }
+        } catch (e: Exception) {
+            println("Disconnection Error $e")
         }
     }
 
@@ -56,6 +77,7 @@ class ChatViewModel(
     fun getChat(receiverId: String) {
         viewModelScope.launch {
             try {
+                startWebSocket()
                 val response = apiClient.getChat(receiverId = receiverId)
                 chats.value = response
             } catch (e: Exception) {

@@ -22,17 +22,20 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
+import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.serialization.json.Json
 
@@ -162,25 +165,23 @@ class ApiClient {
     private var socketSession: DefaultClientWebSocketSession? = null
     suspend fun connectWebSocket(onMessageReceived: (ChatMessage) -> Unit) {
         try {
-            client.webSocket(urlString = "ws://10.0.2.2:8080") {
-                socketSession = this
-                println("WebSocket bağlantısı kuruldu")
+            socketSession = client.webSocketSession {
+                url("ws://10.0.2.2:8080")
+            }
 
-                for (frame in incoming) {
-                    if (frame is Frame.Text) {
-                        val text = frame.readText()
-                        try {
-                            val received = Json.decodeFromString<ChatMessage>(text)
-                            onMessageReceived(received)
-                        } catch (e: Exception) {
-                            println("Mesaj parse hatası: ${e.message}")
-                        }
+            for (frame in socketSession!!.incoming) {
+                if (frame is Frame.Text) {
+                    val text = frame.readText()
+                    try {
+                        val received = Json.decodeFromString<ChatMessage>(text)
+                        onMessageReceived(received)
+                    } catch (e: Exception) {
+                        println("Message Parse Error: ${e.message}")
                     }
                 }
             }
-
         } catch (e: Exception) {
-            println("WebSocket bağlantı hatası: ${e.message}")
+            println("WebSocket Connection Error: ${e.message}")
         }
     }
 
@@ -188,9 +189,22 @@ class ApiClient {
         try {
             val json = Json.encodeToString(ChatMessage.serializer(), message)
             socketSession?.send(Frame.Text(json))
-            println("Mesaj gönderildi: ${message.message}")
         } catch (e: Exception) {
-            println("Mesaj gönderme hatası: ${e.message}")
+            println("Send Message Error: ${e.message}")
+        }
+    }
+
+    suspend fun disconnectWebSocket() {
+        try {
+            socketSession?.close(
+                CloseReason(
+                    CloseReason.Codes.NORMAL,
+                    message = "User disconnection"
+                )
+            )
+            socketSession = null
+        } catch (e: Exception) {
+            println("Disconnection Error: ${e.message}")
         }
     }
 }

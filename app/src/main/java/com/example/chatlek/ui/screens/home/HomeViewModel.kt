@@ -5,11 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatlek.data.entity.user.GetUser
 import com.example.chatlek.ktor.ApiClient
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel() {
 
     var message = MutableStateFlow("")
         private set

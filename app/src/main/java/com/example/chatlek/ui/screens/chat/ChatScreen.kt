@@ -22,12 +22,16 @@ import com.example.chatlek.ui.theme.Black
 fun ChatScreen(
     navHostController: NavHostController,
     chatUser: GetUser,
-    chatViewModel: ChatViewModel
+    chatViewModel: ChatViewModel,
 ) {
 
     Scaffold(
         topBar = {
-            TopBar(chatUser = chatUser, navHostController)
+            TopBar(
+                chatUser = chatUser,
+                navHostController = navHostController,
+                chatViewModel = chatViewModel
+            )
         },
     ) { innerPadding ->
         Column(

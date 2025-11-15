@@ -2,6 +2,7 @@ package com.example.chatlek.ui.screens.chat.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,11 +15,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,14 +32,18 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.chatlek.R
 import com.example.chatlek.data.entity.user.GetUser
+import com.example.chatlek.ui.screens.chat.ChatViewModel
+import com.example.chatlek.ui.screens.home.HomeViewModel
 import com.example.chatlek.ui.theme.Black_Out
+import com.example.chatlek.ui.theme.Gray
 import com.example.chatlek.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     chatUser: GetUser,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    chatViewModel: ChatViewModel,
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -70,7 +80,10 @@ fun TopBar(
         navigationIcon = {
             IconButton(
                 modifier = Modifier.padding(bottom = 16.dp),
-                onClick = { navHostController.popBackStack() }
+                onClick = {
+                    navHostController.popBackStack()
+                    chatViewModel.disconnectWebSocket()
+                }
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),

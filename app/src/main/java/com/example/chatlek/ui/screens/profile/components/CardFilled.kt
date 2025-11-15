@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chatlek.R
 import com.example.chatlek.firebase.storage.StorageViewModel
 import com.example.chatlek.ui.screens.profile.ProfileViewModel
@@ -27,19 +26,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun CardFilled(
     profileViewModel: ProfileViewModel,
-    storageViewModel: StorageViewModel = viewModel()
+    storageViewModel: StorageViewModel = hiltViewModel(),
 ) {
     val image by storageViewModel.imageData.observeAsState()
     val message by profileViewModel.message.collectAsState()
     val user by profileViewModel.user.observeAsState()
 
-    var name by remember { mutableStateOf(TextFieldValue(user?.name ?: "")) }
-    var lastName by remember { mutableStateOf(TextFieldValue(user?.lastName ?: "")) }
-    var email by remember { mutableStateOf(TextFieldValue(user?.email ?: "")) }
+    var name by remember(user) {
+        mutableStateOf(TextFieldValue(user?.name ?: ""))
+    }
+
+    var lastName by remember(user) {
+        mutableStateOf(TextFieldValue(user?.lastName ?: ""))
+    }
+
+    var email by remember(user) {
+        mutableStateOf(TextFieldValue(user?.email ?: ""))
+    }
 
     val context = LocalContext.current
 

@@ -60,7 +60,6 @@ fun ChatList(
                                     chatUser = friends
                                 )
                             )
-                            chatViewModel.startWebSocket()
                         },
                         chatViewModel = chatViewModel
                     )

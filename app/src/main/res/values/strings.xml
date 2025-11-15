@@ -21,4 +21,6 @@
     <string name="update">Update</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="write_message">Write a message</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
 </resources>

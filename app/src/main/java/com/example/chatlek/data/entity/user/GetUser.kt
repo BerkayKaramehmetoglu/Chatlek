@@ -10,5 +10,5 @@ data class GetUser(
     val name: String,
     val lastName: String,
     val email: String,
-    val profilePic: String
+    val profilePic: String,
 )
