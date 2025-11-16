@@ -36,11 +36,11 @@ import com.example.chatlek.ui.theme.White
 
 @Composable
 fun FilledCard(
+    modifier: Modifier,
     email: TextFieldValue,
     onEmailChange: (TextFieldValue) -> Unit,
     password: TextFieldValue,
     onPasswordChange: (TextFieldValue) -> Unit,
-    onClick: () -> Unit,
     onClicks: () -> Unit,
     string: String
 ) {
@@ -48,8 +48,7 @@ fun FilledCard(
         colors = CardDefaults.cardColors(
             containerColor = White,
         ),
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = modifier,
         shape = RoundedCornerShape(topStart = 120.dp),
     ) {
         Column(
@@ -123,10 +122,7 @@ fun FilledCard(
                     disabledIndicatorColor = Color.Transparent
                 )
             )
-
             FilledButton(onClick = onClicks, string = stringResource(R.string.sign_up))
-
-            ButtonText(onClick = onClick, stringResource(R.string.already_registered_log_in_here_))
         }
     }
 }

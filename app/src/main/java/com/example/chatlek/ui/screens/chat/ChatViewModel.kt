@@ -1,13 +1,15 @@
 package com.example.chatlek.ui.screens.chat
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatlek.data.entity.chat.ChatMessage
 import com.example.chatlek.data.entity.chat.GetChat
-import com.example.chatlek.ktor.ApiClient
+import com.example.chatlek.data.repository.ChatRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,8 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    var apiClient: ApiClient,
-    var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var chatRepository: ChatRepository,
+    private var auth: FirebaseAuth,
 ) : ViewModel() {
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
@@ -27,9 +29,9 @@ class ChatViewModel @Inject constructor(
         private set
 
     private fun startWebSocket() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             try {
-                apiClient.connectWebSocket { received ->
+                chatRepository.connectWebSocket { received ->
                     _messages.update { it + received }
                 }
             } catch (e: Exception) {
@@ -40,14 +42,14 @@ class ChatViewModel @Inject constructor(
 
     fun sendMessage(text: String) {
         try {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.Main) {
                 val myMessage = ChatMessage(
                     id = auth.currentUser!!.uid,
                     message = text,
                     isMine = true
                 )
                 _messages.update { it + myMessage }
-                apiClient.sendMessage(myMessage)
+                chatRepository.sendMessage(myMessage)
             }
         } catch (e: Exception) {
             println("Send Message Error $e")
@@ -56,18 +58,18 @@ class ChatViewModel @Inject constructor(
 
     fun disconnectWebSocket() {
         try {
-            viewModelScope.launch {
-                apiClient.disconnectWebSocket()
+            viewModelScope.launch(Dispatchers.Main) {
+                chatRepository.disconnectWebSocket()
             }
         } catch (e: Exception) {
             println("Disconnection Error $e")
         }
     }
 
-    fun createChat(receiverId: String, lastMessage: String) {
-        viewModelScope.launch {
+    private fun createChat(receiverId: String, lastMessage: String) {
+        viewModelScope.launch(Dispatchers.Main) {
             try {
-                apiClient.createChat(receiverId = receiverId, lastMessage = lastMessage)
+                chatRepository.createChat(receiverId = receiverId, lastMessage = lastMessage)
             } catch (e: Exception) {
                 println("Create Chat Error: $e")
             }
@@ -75,10 +77,10 @@ class ChatViewModel @Inject constructor(
     }
 
     fun getChat(receiverId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             try {
                 startWebSocket()
-                val response = apiClient.getChat(receiverId = receiverId)
+                val response = chatRepository.getChat(receiverId = receiverId)
                 chats.value = response
             } catch (e: Exception) {
                 println("Get Chat Error $e")
@@ -86,11 +88,20 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun getChatForUser(receiverId: String): LiveData<GetChat> {
+        val result = MutableLiveData<GetChat>()
+        viewModelScope.launch(Dispatchers.Main) {
+            result.postValue(chatRepository.getChat(receiverId))
+        }
+        return result
+    }
+
     fun updateChat(receiverId: String, lastMessage: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             try {
+                createChat(receiverId = receiverId, lastMessage = lastMessage)
                 val response =
-                    apiClient.updateChat(receiverId = receiverId, lastMessage = lastMessage)
+                    chatRepository.updateChat(receiverId = receiverId, lastMessage = lastMessage)
                 chats.value = response
             } catch (e: Exception) {
                 println("Update Chat Error: $e")

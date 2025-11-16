@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatlek.data.entity.user.GetUser
-import com.example.chatlek.ktor.ApiClient
+import com.example.chatlek.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel() {
+class ProfileViewModel @Inject constructor(private var userRepository: UserRepository) :
+    ViewModel() {
 
     private val _user = MutableLiveData<GetUser>()
     val user: LiveData<GetUser> = _user
@@ -31,10 +33,10 @@ class ProfileViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel
         lastName: String,
         picURL: String,
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             try {
                 val response =
-                    apiClient.createUser(name = name, lastName = lastName, picURL = picURL)
+                    userRepository.createUser(name = name, lastName = lastName, picURL = picURL)
                 if (!response.success) {
                     message.update {
                         response.message
@@ -53,9 +55,9 @@ class ProfileViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel
     }
 
     private fun getUser() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             try {
-                val response = apiClient.getUser()
+                val response = userRepository.getUser()
                 _user.value = response
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -68,10 +70,10 @@ class ProfileViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel
         lastName: String,
         picURL: String,
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             try {
                 val response =
-                    apiClient.updateUser(name = name, lastName = lastName, picURL = picURL)
+                    userRepository.updateUser(name = name, lastName = lastName, picURL = picURL)
                 if (response.success) {
                     getUser()
                     message.update {

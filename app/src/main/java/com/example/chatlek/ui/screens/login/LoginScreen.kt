@@ -31,6 +31,7 @@ import com.example.chatlek.R
 import com.example.chatlek.firebase.auth.AuthState
 import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ui.navigation.Screen
+import com.example.chatlek.ui.screens.rlcomponents.ButtonText
 import com.example.chatlek.ui.screens.rlcomponents.FilledCard
 import com.example.chatlek.ui.theme.Black
 import com.example.chatlek.ui.theme.Black_Out
@@ -84,17 +85,24 @@ fun LoginScreen(navHostController: NavHostController, authViewModel: AuthViewMod
 
         Column(
             modifier = Modifier
-                .weight(1.5f)
-                .fillMaxWidth()
+                .weight(2f)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             FilledCard(
-                onClick = { navHostController.navigate(Screen.Register.route) },
+                modifier = Modifier
+                    .weight(0.5f)
+                    .fillMaxWidth(),
                 email = email,
                 onEmailChange = { email = it },
                 password = password,
                 onPasswordChange = { password = it },
                 onClicks = { authViewModel.login(email.text, password.text) },
                 string = stringResource(R.string.login)
+            )
+            ButtonText(
+                onClick = { navHostController.navigate(Screen.Register.route) },
+                stringResource(R.string.sign_in_to_continue)
             )
         }
     }

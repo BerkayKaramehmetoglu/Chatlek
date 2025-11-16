@@ -4,15 +4,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatlek.data.entity.user.GetUser
-import com.example.chatlek.ktor.ApiClient
+import com.example.chatlek.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel() {
+class HomeViewModel @Inject constructor(private var userRepository: UserRepository) : ViewModel() {
 
     var message = MutableStateFlow("")
         private set
@@ -32,8 +33,8 @@ class HomeViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel() 
 
     fun createFriendsCode(generatedCode: String) {
         try {
-            viewModelScope.launch {
-                apiClient.createFriendsCode(code = generatedCode)
+            viewModelScope.launch(Dispatchers.Main) {
+                userRepository.createFriendsCode(code = generatedCode)
             }
         } catch (e: Exception) {
             println(e)
@@ -42,8 +43,8 @@ class HomeViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel() 
 
     fun useFriendsCode(friendsCode: String, onSuccess: () -> Unit) {
         try {
-            viewModelScope.launch {
-                val response = apiClient.useFriendsCode(code = friendsCode)
+            viewModelScope.launch(Dispatchers.Main) {
+                val response = userRepository.useFriendsCode(code = friendsCode)
                 if (!response.success) {
                     message.update {
                         response.message
@@ -60,8 +61,8 @@ class HomeViewModel @Inject constructor(var apiClient: ApiClient) : ViewModel() 
 
     private fun getFriends() {
         try {
-            viewModelScope.launch {
-                val response = apiClient.getFriends()
+            viewModelScope.launch(Dispatchers.Main) {
+                val response = userRepository.getFriends()
                 friends.value = response
             }
         } catch (e: Exception) {

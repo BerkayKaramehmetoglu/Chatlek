@@ -7,18 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
+import javax.inject.Inject
 
-class StorageViewModel : ViewModel() {
-    private val firebaseStorage = Firebase.storage.reference
+@HiltViewModel
+class StorageViewModel @Inject constructor(private var firebaseStorage: Firebase) : ViewModel() {
     private val _imageData = MutableLiveData<ImageData>()
     val imageData: LiveData<ImageData> = _imageData
 
     fun uploadImage(uri: Uri) {
         val fileName = UUID.randomUUID().toString()
-        val fileLocation = firebaseStorage.child(fileName)
+        val fileLocation = firebaseStorage.storage.reference.child(fileName)
 
         viewModelScope.launch {
             try {

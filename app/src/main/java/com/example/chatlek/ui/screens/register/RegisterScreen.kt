@@ -27,6 +27,7 @@ import com.example.chatlek.R
 import com.example.chatlek.firebase.auth.AuthState
 import com.example.chatlek.firebase.auth.AuthViewModel
 import com.example.chatlek.ui.navigation.Screen
+import com.example.chatlek.ui.screens.rlcomponents.ButtonText
 import com.example.chatlek.ui.screens.rlcomponents.FilledCard
 import com.example.chatlek.ui.theme.Black_Out
 import com.example.chatlek.ui.theme.White
@@ -75,16 +76,23 @@ fun RegisterScreen(navHostController: NavHostController, authViewModel: AuthView
         Column(
             modifier = Modifier
                 .weight(2f)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             FilledCard(
-                onClick = { navHostController.popBackStack() },
+                modifier = Modifier
+                    .weight(0.5f)
+                    .fillMaxWidth(),
                 email = email,
                 onEmailChange = { email = it },
                 password = password,
                 onPasswordChange = { password = it },
-                onClicks= { authViewModel.signup(email.text, password.text) },
+                onClicks = { authViewModel.signup(email.text, password.text) },
                 string = stringResource(R.string.create_new)
+            )
+            ButtonText(
+                onClick = { navHostController.popBackStack() },
+                stringResource(R.string.already_registered_log_in_here_)
             )
         }
     }

@@ -12,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -52,9 +53,12 @@ fun ChatList(
         ) {
             friends.value?.let {
                 items(it) { friends ->
-                    chatViewModel.getChat(friends.id)
+                    LaunchedEffect(friends.id) {
+                        chatViewModel.getChat(friends.id)
+                    }
                     ChatCard(
-                        friends, onClick = {
+                        friends,
+                        onClick = {
                             navHostController.navigate(
                                 Screen.Chat(
                                     chatUser = friends

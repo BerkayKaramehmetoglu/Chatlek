@@ -77,11 +77,11 @@ fun ChatFieldText(
                 .background(Green, shape = CircleShape),
             onClick = {
                 if (message.text.isNotBlank()) {
-                    chatViewModel.createChat(
+                    chatViewModel.updateChat(
                         receiverId = chatUser.id,
                         lastMessage = message.text.trim()
                     )
-                    chatViewModel.sendMessage(text = message.text.trim())
+                    chatViewModel.sendMessage(message.text.trim())
                     message = TextFieldValue("")
                 }
             }
