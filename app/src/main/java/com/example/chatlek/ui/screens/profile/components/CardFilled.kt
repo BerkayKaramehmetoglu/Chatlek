@@ -26,12 +26,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun CardFilled(
     profileViewModel: ProfileViewModel,
-    storageViewModel: StorageViewModel = hiltViewModel(),
+    storageViewModel: StorageViewModel,
 ) {
     val image by storageViewModel.imageData.observeAsState()
     val message by profileViewModel.message.collectAsState()
@@ -71,7 +70,7 @@ fun CardFilled(
             verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically)
         ) {
 
-            UserProfile(profileViewModel = profileViewModel)
+            UserProfile(profileViewModel = profileViewModel, storageViewModel = storageViewModel)
 
             FieldsText(
                 value = name,
@@ -94,20 +93,22 @@ fun CardFilled(
                 keyboardType = KeyboardType.Email,
                 enabled = false
             )
-            val userState = user?.name.isNullOrEmpty() && user?.name.isNullOrEmpty()
+            val userState = user == null
             FilledButton(
                 onClick = {
+                    val imageUrl = image?.imageURL ?: user?.profilePic ?: ""
+
                     if (userState) {
                         profileViewModel.createUser(
                             name = name.text,
                             lastName = lastName.text,
-                            picURL = image?.imageURL ?: ""
+                            picURL = imageUrl
                         )
                     } else {
                         profileViewModel.updateUser(
                             name = name.text,
                             lastName = lastName.text,
-                            picURL = image?.imageURL ?: user!!.profilePic,
+                            picURL = imageUrl
                         )
                     }
                 },

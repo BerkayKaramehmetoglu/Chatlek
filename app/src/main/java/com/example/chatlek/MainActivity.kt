@@ -25,8 +25,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ChatlekTheme {
-                Scaffold(    modifier = Modifier.fillMaxSize(),
-                    contentWindowInsets = WindowInsets(0) ) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    contentWindowInsets = WindowInsets(0)
+                ) { innerPadding ->
                     navController = rememberNavController()
 
                     Column(modifier = Modifier.padding(innerPadding)) {

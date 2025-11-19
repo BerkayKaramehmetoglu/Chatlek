@@ -4,8 +4,8 @@ import com.example.chatlek.data.datasource.DataSource
 import com.example.chatlek.data.repository.ChatRepository
 import com.example.chatlek.data.repository.UserRepository
 import com.example.chatlek.ktor.ApiClient
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +20,12 @@ class AppModule {
     @Singleton
     fun provideAppClient(): ApiClient {
         return ApiClient()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseStorage(): FirebaseStorage {
+        return FirebaseStorage.getInstance()
     }
 
     @Provides
@@ -44,11 +50,5 @@ class AppModule {
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
-    }
-
-    @Provides
-    @Singleton
-    fun provideFirebaseStorage(): Firebase {
-        return Firebase
     }
 }

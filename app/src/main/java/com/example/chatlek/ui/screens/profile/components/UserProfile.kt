@@ -27,7 +27,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.chatlek.R
@@ -37,12 +36,17 @@ import com.example.chatlek.ui.theme.Black_Out
 import com.example.chatlek.ui.theme.Green
 
 @Composable
-fun UserProfile(profileViewModel: ProfileViewModel) {
+fun UserProfile(profileViewModel: ProfileViewModel, storageViewModel: StorageViewModel) {
 
-    val storageViewModel: StorageViewModel = viewModel()
     val user by profileViewModel.user.observeAsState()
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+
+    LaunchedEffect(imageUri) {
+        if (imageUri != null) {
+            storageViewModel.uploadImage(imageUri!!)
+        }
+    }
 
     val galleryLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
@@ -72,7 +76,6 @@ fun UserProfile(profileViewModel: ProfileViewModel) {
                     .clip(CircleShape)
                     .background(Black_Out)
             )
-            if (imageURL) storageViewModel.uploadImage(imageUri!!)
         } else {
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),

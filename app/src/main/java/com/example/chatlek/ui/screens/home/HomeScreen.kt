@@ -55,6 +55,10 @@ fun HomeScreen(
         }
     }
 
+    LaunchedEffect(showDialog) {
+        homeViewModel.getFriends()
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {

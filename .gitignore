@@ -36,3 +36,4 @@ local.properties
 ehthumbs.db
 Thumbs.db
 app/google-services.json
+build/reports/problems/problems-report.html

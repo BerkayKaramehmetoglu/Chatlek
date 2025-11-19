@@ -28,8 +28,12 @@ class ChatViewModel @Inject constructor(
     var chats = MutableLiveData<GetChat>()
         private set
 
+    init {
+        startWebSocket()
+    }
+
     private fun startWebSocket() {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             try {
                 chatRepository.connectWebSocket { received ->
                     _messages.update { it + received }
@@ -42,7 +46,7 @@ class ChatViewModel @Inject constructor(
 
     fun sendMessage(text: String) {
         try {
-            viewModelScope.launch(Dispatchers.Main) {
+            viewModelScope.launch {
                 val myMessage = ChatMessage(
                     id = auth.currentUser!!.uid,
                     message = text,
@@ -58,7 +62,7 @@ class ChatViewModel @Inject constructor(
 
     fun disconnectWebSocket() {
         try {
-            viewModelScope.launch(Dispatchers.Main) {
+            viewModelScope.launch {
                 chatRepository.disconnectWebSocket()
             }
         } catch (e: Exception) {
@@ -79,7 +83,6 @@ class ChatViewModel @Inject constructor(
     fun getChat(receiverId: String) {
         viewModelScope.launch(Dispatchers.Main) {
             try {
-                startWebSocket()
                 val response = chatRepository.getChat(receiverId = receiverId)
                 chats.value = response
             } catch (e: Exception) {

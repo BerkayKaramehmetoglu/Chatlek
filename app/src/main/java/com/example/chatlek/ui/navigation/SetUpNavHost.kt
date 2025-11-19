@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.chatlek.data.entity.user.GetUser
 import com.example.chatlek.firebase.auth.AuthViewModel
+import com.example.chatlek.firebase.storage.StorageViewModel
 import com.example.chatlek.ui.screens.chat.ChatScreen
 import com.example.chatlek.ui.screens.chat.ChatViewModel
 import com.example.chatlek.ui.screens.home.HomeScreen
@@ -48,7 +49,8 @@ fun SetUpNavHost(
 
         composable(Screen.Profile.route) {
             val profileViewModel: ProfileViewModel = hiltViewModel()
-            ProfileScreen(profileViewModel = profileViewModel)
+            val storageViewModel: StorageViewModel = hiltViewModel()
+            ProfileScreen(profileViewModel = profileViewModel, storageViewModel = storageViewModel)
         }
 
         composable<Screen.Chat>(

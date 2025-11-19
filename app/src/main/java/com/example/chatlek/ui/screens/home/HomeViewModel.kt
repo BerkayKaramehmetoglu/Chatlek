@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(private var userRepository: UserReposito
         }
     }
 
-    private fun getFriends() {
+    fun getFriends() {
         try {
             viewModelScope.launch(Dispatchers.Main) {
                 val response = userRepository.getFriends()

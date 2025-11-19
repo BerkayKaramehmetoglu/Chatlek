@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.chatlek.R
+import com.example.chatlek.firebase.storage.StorageViewModel
 import com.example.chatlek.ui.screens.profile.components.CardFilled
 import com.example.chatlek.ui.theme.Black
 import com.example.chatlek.ui.theme.White
@@ -20,6 +21,7 @@ import com.example.chatlek.ui.theme.White
 @Composable
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
+    storageViewModel: StorageViewModel
 ) {
 
     Column(
@@ -49,7 +51,7 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            CardFilled(profileViewModel = profileViewModel)
+            CardFilled(profileViewModel = profileViewModel, storageViewModel = storageViewModel)
         }
     }
 }
